@@ -1,0 +1,32 @@
+{
+  "source_url": {
+    "description": "通知列表页面 URL",
+    "type": "string",
+    "default": "https://jxyxbzzx.dlut.edu.cn/tzgg/kfqxq.htm"
+  },
+  "base_url": {
+    "description": "站点根 URL，用于补全相对链接",
+    "type": "string",
+    "default": "https://jxyxbzzx.dlut.edu.cn/"
+  },
+  "rss_title": {
+    "description": "RSS 标题",
+    "type": "string",
+    "default": "DLUT 开发区校区通知"
+  },
+  "rss_max_items": {
+    "description": "RSS 保留条数",
+    "type": "int",
+    "default": 30
+  },
+  "poll_interval_minutes": {
+    "description": "轮询间隔（分钟）",
+    "type": "int",
+    "default": 15
+  },
+  "request_timeout_seconds": {
+    "description": "HTTP 请求超时（秒）",
+    "type": "int",
+    "default": 20
+  }
+}

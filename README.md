@@ -1,14 +1,46 @@
-# astrbot-plugin-helloworld
+# astrbot_plugin_dlut_rss
 
-AstrBot 插件模板 / A template plugin for AstrBot plugin feature
+抓取大连理工大学教学运行保障中心开发区校区通知，生成 RSS 文件，并把新增通知主动推送到已订阅会话。
 
-> [!NOTE]
-> This repo is just a template of [AstrBot](https://github.com/AstrBotDevs/AstrBot) Plugin.
-> 
-> [AstrBot](https://github.com/AstrBotDevs/AstrBot) is an agentic assistant for both personal and group conversations. It can be deployed across dozens of mainstream instant messaging platforms, including QQ, Telegram, Feishu, DingTalk, Slack, LINE, Discord, Matrix, etc. In addition, it provides a reliable and extensible conversational AI infrastructure for individuals, developers, and teams. Whether you need a personal AI companion, an intelligent customer support agent, an automation assistant, or an enterprise knowledge base, AstrBot enables you to quickly build AI applications directly within your existing messaging workflows.
+## 功能
 
-# Supports
+- 抓取通知页: https://jxyxbzzx.dlut.edu.cn/tzgg/kfqxq.htm
+- 定时轮询检测新增通知
+- 生成标准 RSS 2.0 文件
+- 向已订阅会话主动推送新增通知
 
-- [AstrBot Repo](https://github.com/AstrBotDevs/AstrBot)
-- [AstrBot Plugin Development Docs (Chinese)](https://docs.astrbot.app/dev/star/plugin-new.html)
-- [AstrBot Plugin Development Docs (English)](https://docs.astrbot.app/en/dev/star/plugin-new.html)
+## 依赖
+
+- `httpx`
+- `beautifulsoup4`
+
+安装方式: 在插件目录执行依赖安装，或由 AstrBot 插件依赖管理自动安装 `requirements.txt`。
+
+## 指令
+
+- `/dlut subscribe`: 订阅当前会话
+- `/dlut unsubscribe`: 取消订阅当前会话
+- `/dlut check`: 立即检查一次并推送增量
+- `/dlut latest`: 查看最近 5 条通知
+- `/dlut rss`: 查看 RSS 文件路径
+
+## 配置项
+
+配置文件 Schema 位于 `_conf_schema.json`，支持在 AstrBot WebUI 可视化配置:
+
+- `source_url`: 通知列表页 URL
+- `base_url`: 站点根 URL
+- `rss_title`: RSS 标题
+- `rss_max_items`: RSS 保留条数
+- `poll_interval_minutes`: 轮询间隔（分钟）
+- `request_timeout_seconds`: 请求超时（秒）
+
+## 数据存储
+
+- 订阅会话与已推送通知 ID: AstrBot KV 存储
+- RSS 文件: `data/plugin_data/astrbot_plugin_dlut_rss/dlut_notice_rss.xml`
+
+## 说明
+
+- 首次运行会建立通知基线，不会推送历史消息。
+- 某些平台可能限制主动消息发送，属于平台能力限制。
