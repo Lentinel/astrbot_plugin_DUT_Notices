@@ -11,7 +11,7 @@ from sources import SourceConfig, format_source_lines, resolve_source
 from subscription_store import SubscriptionStore
 
 
-@register("astrbot_plugin_dlut_rss", "GitHub Copilot", "抓取 DLUT 多站点通知并推送到订阅会话", "1.2.1")
+@register("astrbot_plugin_dlut_rss", "aliveriver", "抓取 DLUT 多站点通知并推送到订阅会话", "1.2.1")
 class DLUTRSSPlugin(Star):
     def __init__(self, context: Context, config: dict[str, Any] | None = None):
         super().__init__(context)
