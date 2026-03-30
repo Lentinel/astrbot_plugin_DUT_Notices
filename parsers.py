@@ -14,3 +14,11 @@ def parse_h2_child(tag: Tag) -> str:
 
 def parse_text_content(tag: Tag) -> str:
     return tag.get_text(" ", strip=True)
+
+
+def parse_title_with_keyword(tag: Tag, keyword: str = "开发区") -> str:
+    """解析标题，仅当标题包含指定关键词时返回标题，否则返回空字符串。"""
+    title = (tag.get("title") or tag.get_text(" ", strip=True)).strip()
+    if keyword in title:
+        return title
+    return ""

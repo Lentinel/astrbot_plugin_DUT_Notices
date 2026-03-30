@@ -2,7 +2,7 @@
   "rss_title": {
     "description": "聚合 RSS 标题",
     "type": "string",
-    "default": "DLUT 多站点通知聚合"
+    "default": "大连理工大学多站点通知聚合"
   },
   "rss_max_items": {
     "description": "RSS 保留条数",
@@ -18,5 +18,11 @@
     "description": "HTTP 请求超时（秒）",
     "type": "int",
     "default": 20
+  },
+  "push_targets": {
+    "description": "主动推送目标会话 ID 列表",
+    "type": "list",
+    "default": [],
+    "hint": "在此配置需要主动推送通知的会话 ID（unified_msg_origin）。可通过 /dut_notice add_push_target 指令动态添加。"
   }
 }
