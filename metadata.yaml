@@ -1,7 +1,7 @@
 ﻿name: astrbot_plugin_DUT_Notices
 display_name: 大连理工大学通知新闻推送
 desc: 聚合爬取大连理工大学多个通知站点（以开发区校区为主）最新内容，向订阅会话推送最新通知。
-version: v1.0.1
+version: v1.0.2
 author: Lentinel
 repo: https://github.com/Lentinel/astrbot_plugin_DUT_Notices
 

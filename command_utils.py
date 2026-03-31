@@ -12,8 +12,8 @@ def extract_command_args(event: AstrMessageEvent, command_name: str) -> str:
 
         lowered = normalized.lower()
         prefixes = [
-            f"/dlut {command_name}",
-            f"dlut {command_name}",
+            f"/dut_notice {command_name}",
+            f"dut_notice {command_name}",
             f"{command_name}",
         ]
         for prefix in prefixes:
@@ -22,7 +22,7 @@ def extract_command_args(event: AstrMessageEvent, command_name: str) -> str:
             if lowered.startswith(prefix + " "):
                 return normalized[len(prefix) :].strip()
 
-        if "dlut" not in lowered and command_name not in lowered:
+        if "dut_notice" not in lowered and command_name not in lowered:
             return normalized
     return ""
 

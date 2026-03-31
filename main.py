@@ -34,7 +34,7 @@ for _module_name in (
 
 from command_utils import extract_command_args, format_latest_lines
 from rss_service import DutRssService, Notice
-from sources import SourceConfig, format_source_lines, resolve_source
+from sources import SourceConfig, format_source_lines, resolve_source, SOURCES
 from subscription_store import SubscriptionStore
 
 
@@ -123,7 +123,7 @@ class DutNoticePlugin(Star):
         """订阅指定来源的新通知推送。"""
         umo = event.unified_msg_origin
         error = f"参数错误，请使用 /dut_notice subscribe_source <来源 key|来源名>"
-        source = self._resolve_source_from_event(event, error)
+        source = self._resolve_source_from_event(event, "subscribe_source")
         if source is None:
             yield event.plain_result(error)
             return
@@ -141,7 +141,7 @@ class DutNoticePlugin(Star):
         """取消订阅指定来源的新通知推送。"""
         umo = event.unified_msg_origin
         error = f"参数错误，请使用 /dut_notice unsubscribe_source <来源 key|来源名>"
-        source = self._resolve_source_from_event(event, error)
+        source = self._resolve_source_from_event(event, "unsubscribe_source")
         if source is None:
             yield event.plain_result(error)
             return
@@ -219,21 +219,28 @@ class DutNoticePlugin(Star):
 
     @dut_notice_group.command("latest_source")
     async def latest_source(self, event: AstrMessageEvent):
-        """查看指定来源最近 5 条通知。"""
-        error = f"参数错误，请使用 /dut_notice latest_source <来源 key|来源名>"
-        source = self._resolve_source_from_event(event, error)
+        """按来源查看最新通知，默认显示 5 条。"""
+        source = self._resolve_source_from_event(event, "latest_source")
         if source is None:
+            error = f"未找到来源\n可先使用 /dut_notice sources 查看可用来源。"
             logger.info(f"[DUT RSS] latest_source 未解析到来源：{error}")
             yield event.plain_result(error)
             return
 
-        logger.info(f"[DUT RSS] latest_source 开始抓取 source_key={source['key']} source_name={source['name']}")
-        notices = await self._rss_service.fetch_notices(source_keys={source["key"]})
-        logger.info(f"[DUT RSS] latest_source 抓取完成 source_key={source['key']} count={len(notices)}")
-        if not notices:
-            yield event.plain_result(f"{source['name']} 暂无通知。")
+        source_key = source.get("key")
+        source_name = source.get("name", "Unknown")
+        if not source_key:
+            yield event.plain_result("来源配置不完整，缺少 key。")
             return
-        yield event.plain_result(format_latest_lines(f"{source['name']} 最近通知", notices[:5]))
+
+        logger.info(f"[DUT RSS] latest_source 开始抓取 source_key={source_key} source_name={source_name}")
+        notices = await self._rss_service.fetch_notices(source_keys={source_key})
+        logger.info(f"[DUT RSS] latest_source 抓取完成 source_key={source_key} count={len(notices)}")
+        if not notices:
+            yield event.plain_result(f"来源 {source_name} 暂未抓取到通知，请稍后再试。")
+            return
+        title = f"最新通知：{source_name} ({source_key})"
+        yield event.plain_result(format_latest_lines(title, notices[:5]))
 
     @dut_notice_group.command("latest_campus")
     async def latest_campus(self, event: AstrMessageEvent):
@@ -342,14 +349,15 @@ class DutNoticePlugin(Star):
                     logger.warning(f"[DUT RSS] 向会话推送失败 {umo}: {exc}")
 
     def _resolve_source_from_event(
-        self, event: AstrMessageEvent, error_hint: str
+        self, event: AstrMessageEvent, command_name: str
     ) -> SourceConfig | None:
-        text = extract_command_args(event, "").strip()
-        if not text:
+        query = extract_command_args(event, command_name)
+        if not query:
             return None
-        source = resolve_source(text)
+
+        source = resolve_source(query)
         if source is None:
-            logger.info(f"[DUT RSS] 未找到匹配的来源，输入：{text}，可用来源：{[s['key'] for s in SOURCES]}")
+            logger.info(f"[DUT RSS] 未找到匹配的来源，输入：{query}，可用来源：{[s['key'] for s in SOURCES]}")
         return source
 
     def _cfg_int(self, key: str, default: int) -> int:

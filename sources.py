@@ -249,7 +249,7 @@ SOURCES: list[SourceConfig] = [
     },
 ]
 
-SOURCES_BY_KEY = {source["key"]: source for source in SOURCES}
+SOURCES_BY_KEY = {source["key"]: source for source in SOURCES if "key" in source}
 
 
 def resolve_source(query: str) -> SourceConfig | None:
@@ -265,11 +265,11 @@ def resolve_source(query: str) -> SourceConfig | None:
         source
         for source in SOURCES
         if normalized_query in {
-            _normalize_query(source["key"]),
-            _normalize_query(source["name"]),
+            _normalize_query(source.get("key", "")),
+            _normalize_query(source.get("name", "")),
         }
-        or normalized_query in _normalize_query(source["key"])
-        or normalized_query in _normalize_query(source["name"])
+        or normalized_query in _normalize_query(source.get("key", ""))
+        or normalized_query in _normalize_query(source.get("name", ""))
     ]
     if len(matches) == 1:
         return matches[0]

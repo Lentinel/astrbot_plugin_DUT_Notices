@@ -108,7 +108,7 @@
 ## 数据存储
 
 - 订阅会话与已推送通知 ID: AstrBot KV 存储
-- RSS 文件：`data/plugin_data/astrbot_plugin_DUT_Notices/dlut_notice_rss.xml`
+- RSS 文件：`data/plugin_data/astrbot_plugin_DUT_Notices/dut_notice_rss.xml`
 
 ## 说明
 
